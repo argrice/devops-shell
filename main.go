@@ -1,7 +1,6 @@
 package main
 
 import (
-    "bufio"
     "context"
     "errors"
     "fmt"
@@ -132,8 +131,10 @@ func (tm *TaskManager) printTaskStatus() {
 
 // executeCommandWithContext runs a command with a given context.
 func executeCommandWithContext(ctx context.Context, cmd string) (string, error) {
-    command := exec.CommandContext(ctx, "sh", "-c", cmd)
-    output, err := command.CombinedOutput()
+    args := strings.Fields(cmd) // Split command into fields for execution
+    command := exec.CommandContext(ctx, args[0], args[1:]...) // Execute command directly
+
+    output, err := command.CombinedOutput() // Combine standard output and error
     return string(output), err
 }
 
@@ -200,57 +201,4 @@ func main() {
             fmt.Fprintf(os.Stderr, "%s is not valid\n", input)
         }
     }
-}
-
-func loadHistory(path string) []string {
-    file, err := os.Open(path)
-    if err != nil {
-        return []string{}
-    }
-    defer file.Close()
-
-    var history []string
-    scanner := bufio.NewScanner(file)
-    for scanner.Scan() {
-        history = append(history, scanner.Text())
-    }
-
-    return history
-}
-
-func saveHistory(history []string, path string) {
-    file, err := os.Create(path)
-    if err != nil {
-        fmt.Println("Error saving history:", err)
-        return
-    }
-    defer file.Close()
-
-    for _, item := range history {
-        file.WriteString(item + "\n")
-    }
-}
-
-var ErrNoPath = errors.New("path required")
-
-func execInput(input string) error {
-    input = strings.TrimSuffix(input, "\n")
-    args := strings.Split(input, " ")
-
-    switch args[0] {
-    case "cd":
-        if len(args) < 2 {
-            return os.Chdir(os.Getenv("HOME"))
-        }
-        return os.Chdir(args[1])
-    case "exit":
-        return ErrExit
-    }
-
-    cmd := exec.Command(args[0], args[1:]...)
-    cmd.Stdin = os.Stdin
-    cmd.Stdout = os.Stdout
-    cmd.Stderr = os.Stderr
-
-    return cmd.Run()
 }
