@@ -9,7 +9,7 @@ import (
     "time"
 )
 
-// TaskResult holds the result of a task execution.
+// TaskResult holds the result of a task execution
 type TaskResult struct {
     Command string
     Output  string
@@ -17,20 +17,20 @@ type TaskResult struct {
     Status  string
 }
 
-// TaskManager manages running tasks and provides real-time feedback.
+// TaskManager manages running tasks and provides real-time feedback
 type TaskManager struct {
     tasks     map[int]*TaskResult
     taskMutex sync.Mutex
 }
 
-// NewTaskManager initializes a TaskManager.
+// NewTaskManager initializes a TaskManager
 func NewTaskManager() *TaskManager {
     return &TaskManager{
         tasks: make(map[int]*TaskResult),
     }
 }
 
-// AddTask adds a task to the manager.
+// AddTask adds a task to the manager
 func (tm *TaskManager) AddTask(id int, command string) {
     tm.taskMutex.Lock()
     tm.tasks[id] = &TaskResult{
@@ -40,7 +40,7 @@ func (tm *TaskManager) AddTask(id int, command string) {
     tm.taskMutex.Unlock()
 }
 
-// UpdateTaskStatus updates the status of a task.
+// UpdateTaskStatus updates the status of a task
 func (tm *TaskManager) UpdateTaskStatus(id int, status string) {
     tm.taskMutex.Lock()
     if task, exists := tm.tasks[id]; exists {
@@ -49,7 +49,7 @@ func (tm *TaskManager) UpdateTaskStatus(id int, status string) {
     tm.taskMutex.Unlock()
 }
 
-// RunParallel executes commands in parallel and provides real-time feedback.
+// RunParallel executes commands in parallel and provides real-time feedback
 func (tm *TaskManager) RunParallel(commands []string) {
     var wg sync.WaitGroup
     results := make(chan TaskResult, len(commands))
@@ -92,7 +92,7 @@ func (tm *TaskManager) RunParallel(commands []string) {
     }
 }
 
-// printTaskStatus displays the current status of each task.
+// printTaskStatus displays the current status of each task
 func (tm *TaskManager) printTaskStatus() {
     for {
         time.Sleep(1 * time.Second)
@@ -118,7 +118,7 @@ func (tm *TaskManager) printTaskStatus() {
     }
 }
 
-// executeCommandWithContext runs a command with a given context.
+// executeCommandWithContext runs a command with a given context
 func executeCommandWithContext(ctx context.Context, cmd string) (string, error) {
     args := strings.Fields(cmd) // Split command into fields for execution
     command := exec.CommandContext(ctx, args[0], args[1:]...) // Execute command directly
