@@ -1,6 +1,3 @@
-<div style="text-align: left;">
-
-
 # devops-shell
 
 devops-shell is a lightweight shell written in go.lang with built-ins specifically catering towards Dev-Ops Engineers. 
@@ -37,4 +34,3 @@ devops-shell is a lightweight shell written in go.lang with built-ins specifical
 3. Run executable
    ```bash
    ./devops-shell
-</div>
